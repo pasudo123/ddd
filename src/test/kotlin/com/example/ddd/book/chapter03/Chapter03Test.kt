@@ -24,5 +24,7 @@ internal class Chapter03Test {
 
         // then
         identity shouldBe false
+        member1.id shouldBe 1
+        member2.id shouldBe 2
     }
 }
