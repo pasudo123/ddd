@@ -12,7 +12,6 @@ import org.junit.jupiter.api.assertThrows
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class Chapter02Test {
 
-
     @Test
     @Order(10)
     fun `(1) Money 표현력이 풍부하다`() {
