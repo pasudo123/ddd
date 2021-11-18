@@ -37,7 +37,8 @@
     * 레파지토리와 도메인 서비스 책임 둘 중에 `행위` 가 어디에 더 가까운지 알아야 한다.
 
 * 💁 __애플리케이션 서비스__   
-<img src="./images/DDD_application_service.png" />
+<img src="./images/DDD_application_service.png" />   
+  
   * `api` -> `application-service` -> `domain-service` -> `repository` -> `data-store`
     * application-service 에서 여러 domain-service 의 내용들을 머지해서 내려주도록 해야한다.
     * 애플리케이션 서비스에 대한 응집도를 낮출수도 혹은 높일수도 있다.
