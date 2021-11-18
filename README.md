@@ -38,3 +38,12 @@
 
 * 💁 __애플리케이션 서비스__   
 <img src="./images/DDD_application_service.png" />
+  * `api` -> `application-service` -> `domain-service` -> `repository` -> `data-store`
+    * application-service 에서 여러 domain-service 의 내용들을 머지해서 내려주도록 해야한다.
+    * 애플리케이션 서비스에 대한 응집도를 낮출수도 혹은 높일수도 있다.
+      * 응집도를 낮춘다면,
+        * UserApplicationService (유저 등록/탈퇴/수정 을 모두 다 한다.)
+      * 응집도를 높인다면, (패키지로 응집도 높인 클래스를 구분한다. application.users.*)
+        * UserApplicationRegisterService
+        * UserApplicationDeleteService
+        * UserApplicationUpdateService
