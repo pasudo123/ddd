@@ -13,10 +13,10 @@ class Person private constructor (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
-        private set
+        protected set
 
     var name: String = name
-        private set
+        protected set
 
     companion object {
         fun create(name: String): Person {
