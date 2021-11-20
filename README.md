@@ -48,3 +48,41 @@
         * UserApplicationRegisterService
         * UserApplicationDeleteService
         * UserApplicationUpdateService
+    
+#### 스프링의 `@Service` 애노테이션을 보면 아래와 같은 내용이 있다.
+> Indicates that an annotated class is a "Service",    
+> originally defined by Domain-Driven Design (Evans, 2003) as "an operation offered as an interface that stands alone in the model,    
+> with no encapsulated state."   
+> 
+> May also indicate that a class is a "Business Service Facade" (in the Core J2EE patterns sense), or something similar.    
+> This annotation is a general-purpose stereotype and individual teams may narrow their semantics and use as appropriate.   
+* 도메인 모델에서 별도의 캡슐화된 상태값 없이 독립적인 형태로 작업을 제공한다.
+* 또 비즈니스 서비스 의 facade 형태로 혹은 이와 유사하게 나타낼 수 있다. 블라블라블라
+* 개인적으로 `Service` 애노테이션을 결과적으로 사용하기에 따라 애플리케이션 서비스 혹은 도메인 서비스로 사용할 수 있지 않을까?? 싶다.
+  * 따라서, 나는 구분해서 사용하기위해 별도의 메타애노테이션을 정의했다.
+```kotlin
+/**
+ * 도메인과 레파지토리에 밀접한 도메인 서비스 애노테이션이다.
+ * 도메인 서비스끼리는 서로 호출하지 않는게 핵심이다.
+ */
+@Service
+@Target(AnnotationTarget.TYPE, AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class DomainService(
+    @get:AliasFor(annotation = Service::class, attribute = "value")
+    val value: String = ""
+)
+
+/**
+ * 사용자 유스케이스에 대한 전용 애플리케이션 서비스 애노테이션이다.
+ */
+@Service
+@Target(AnnotationTarget.TYPE, AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ApplicationService(
+    @get:AliasFor(annotation = Service::class, attribute = "value")
+    val value: String = ""
+)
+```
+
+
