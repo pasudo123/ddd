@@ -3,7 +3,7 @@ package com.example.ddd.book.chapter06.domain.post.resources
 class PostResources {
 
     data class CreateRequest(
-        val name: String,
+        val title: String,
         val content: String
     )
 

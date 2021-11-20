@@ -1,4 +1,4 @@
-package com.example.ddd.book.config
+package com.example.ddd.book.annotation
 
 import org.springframework.core.annotation.AliasFor
 import org.springframework.stereotype.Service
