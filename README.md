@@ -85,4 +85,12 @@ annotation class ApplicationService(
 )
 ```
 
+* 💁 __소프트웨어 유연성을 위한 의존관계__
+  * DIP 를 이용해 해결한다. (의존관계 역전 원칙)
+  * 스프링 프레임워크에서는 IoC 컨테이너를 구현하여, DI (의존관계 역전) 을 구행하고 있다.
+    * https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-introduction
+  * 기타 다른 책들 (오브젝트와 클린코드) 에서도 관련 내용을 언급하고 있다.
+    * https://github.com/coding-buddha/object-by-kotlin/blob/main/README-object.md
+    * https://github.com/pasudo123/mango-banana-clean-code/blob/master/README.md
+
 
