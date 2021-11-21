@@ -93,4 +93,8 @@ annotation class ApplicationService(
     * https://github.com/coding-buddha/object-by-kotlin/blob/main/README-object.md
     * https://github.com/pasudo123/mango-banana-clean-code/blob/master/README.md
 
+* 💁 __소프트웨어 시스템 구성하기__
+  * 프론트엔드에서 들어오는 데이터를 전달하는 객체와 애플리케이션 서비스의 행동을 실행하기 위한 객체는 엄연히 용도가 다르다. 
+  * 특별한 이유가 없는 한 이런 식으로 객체를 재사용하는 것은 좋지 않다.
+
 
