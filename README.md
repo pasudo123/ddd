@@ -1,11 +1,11 @@
 # 도메인 주도 설계 철저 입문 By Kotlin
 
 ## 지식을 표현하는 패턴
-* 💁 __값 객체 (Value Object)__
+* 💁 [chapter02](#) __값 객체 (Value Object)__
   * Equality 로 비교된다. (내부적인 값의 속성을 비교한다.)
   * 불변 특성이 있다.
   * 값의 변경은 새로운 값 객체의 생성이 된다.
-* 💁 __엔티티 (Entity)__
+* 💁 [chapter03](#) __엔티티 (Entity)__
   * Identity 로 비교된다. (별도의 식별자가 있다.)
   * 가변 특성이 있다.
     
@@ -21,7 +21,7 @@
 > 값 객체도 될 수 있고 엔티티가 될 수있는 모델이 있는 경우   
 > 환경에 따라 달라질 수 있으니 충분히 고민을 해봐야 함 (경험적으로 많이 겪어봐야 알 듯)
 
-* 💁 __도메인 서비스__
+* 💁 [chapter04](#) __도메인 서비스__
   * 값 객체로 모든 행동을 구현하지 않고, 별도의 객체로 분리해서 정의할 수 있도록 한다. (별도의 객채 = 도메인 서비스)
     * 도메인 서비스는 값 객체와 엔티티에서 구현되는 `부자연스러움` 을 해결해준다.
   * 도메인 서비스는 별도의 상태값은 가지지 않는다.
@@ -31,12 +31,12 @@
   * 도메인 서비스에서 구현할 지 망설여진다면 우선 `엔티티나 값 객체에 정의해본다.`
 
 ## 애플리케이션을 구성하는 패턴
-* 💁 __레파지토리__
+* 💁 [chapter05](#) __레파지토리__
   * 레파지토리 책임은 객체의 퍼시스턴시까지다.
     * 레파지토리의 책임이 도메인 규칙에 가깝게 책임을 가지고 있는지 살펴야 한다.
     * 레파지토리와 도메인 서비스 책임 둘 중에 `행위` 가 어디에 더 가까운지 알아야 한다.
 
-* 💁 __애플리케이션 서비스__   
+* 💁 [chapter06](#) __애플리케이션 서비스__   
 <img src="./images/DDD_application_service.png" />   
   
   * `api` -> `application-service` -> `domain-service` -> `repository` -> `data-store`
@@ -85,7 +85,7 @@ annotation class ApplicationService(
 )
 ```
 
-* 💁 __소프트웨어 유연성을 위한 의존관계__
+* 💁 [chapter07](#) __소프트웨어 유연성을 위한 의존관계__
   * DIP 를 이용해 해결한다. (의존관계 역전 원칙)
   * 스프링 프레임워크에서는 IoC 컨테이너를 구현하여, DI (의존관계 역전) 을 구행하고 있다.
     * https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-introduction
@@ -93,8 +93,10 @@ annotation class ApplicationService(
     * https://github.com/coding-buddha/object-by-kotlin/blob/main/README-object.md
     * https://github.com/pasudo123/mango-banana-clean-code/blob/master/README.md
 
-* 💁 __소프트웨어 시스템 구성하기__
+* 💁 [chapter08](#) __소프트웨어 시스템 구성하기__
   * 프론트엔드에서 들어오는 데이터를 전달하는 객체와 애플리케이션 서비스의 행동을 실행하기 위한 객체는 엄연히 용도가 다르다. 
   * 특별한 이유가 없는 한 이런 식으로 객체를 재사용하는 것은 좋지 않다.
-
-
+  
+* 💁 [chapter09](#) __팩토리__
+  * 팩토리를 이용해 객체 생성 절차를 캡슐화하는 것도 로직의 의도를 더 명확히 드러내면서 유연성을 확보할 수 있는 좋은 방법이다.
+  
