@@ -87,17 +87,53 @@ annotation class ApplicationService(
 ```
 
 ### chapter07 : 💁 __소프트웨어 유연성을 위한 의존관계__
-  * DIP 를 이용해 해결한다. (의존관계 역전 원칙)
-  * 스프링 프레임워크에서는 IoC 컨테이너를 구현하여, DI (의존관계 역전) 을 구행하고 있다.
-    * https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-introduction
-  * 기타 다른 책들 (오브젝트와 클린코드) 에서도 관련 내용을 언급하고 있다.
-    * https://github.com/coding-buddha/object-by-kotlin/blob/main/README-object.md
-    * https://github.com/pasudo123/mango-banana-clean-code/blob/master/README.md
+* DIP 를 이용해 해결한다. (의존관계 역전 원칙)
+* 스프링 프레임워크에서는 IoC 컨테이너를 구현하여, DI (의존관계 역전) 을 구행하고 있다.
+  * https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-introduction
+* 기타 다른 책들 (오브젝트와 클린코드) 에서도 관련 내용을 언급하고 있다.
+  * https://github.com/coding-buddha/object-by-kotlin/blob/main/README-object.md
+  * https://github.com/pasudo123/mango-banana-clean-code/blob/master/README.md
 
 ### chapter08 : 💁 __소프트웨어 시스템 구성하기__
-  * 프론트엔드에서 들어오는 데이터를 전달하는 객체와 애플리케이션 서비스의 행동을 실행하기 위한 객체는 엄연히 용도가 다르다. 
-  * 특별한 이유가 없는 한 이런 식으로 객체를 재사용하는 것은 좋지 않다.
+* 프론트엔드에서 들어오는 데이터를 전달하는 객체와 애플리케이션 서비스의 행동을 실행하기 위한 객체는 엄연히 용도가 다르다. 
+* 특별한 이유가 없는 한 이런 식으로 객체를 재사용하는 것은 좋지 않다.
   
 ### chapter09 : 💁 __팩토리__
-  * 팩토리를 이용해 객체 생성 절차를 캡슐화하는 것도 로직의 의도를 더 명확히 드러내면서 유연성을 확보할 수 있는 좋은 방법이다.
+* 팩토리를 이용해 객체 생성 절차를 캡슐화하는 것도 로직의 의도를 더 명확히 드러내면서 유연성을 확보할 수 있는 좋은 방법이다.
+
+### chapter12 : 💁 __어그리게이트__ ⭐️⭐️
+<img alt="image" src="./images/aggregate_ddd.drawio.png" />   
+
+* 어그리게이트는 경계와 루트를 갖는다.
+  * 어그리게이트 경계, 어그리게이트에 포함되는 대상을 결정하는 경계
+  * 어그리게이트 루트, 어그리게이트에 포함되는 특정한 객체
+* __외부에서 어그리게이트를 다루는 조작은 모두 루트를 거쳐야 한다.__
+* 리포지토리는 애그리게이트마다 하나씩 만든다.
+* 식별자를 이용한 컴포지션 `개인적으로 신선하다고 느낀다.`
+  * User 와 Circle 의 관계가 N : 1 이라고 하였을 때, 아래와 같이 작성하는 것을 뜻한다.
+  
+> USER 를 인스턴스로 갖지 않고 식별자로 가지는 것을 뜻한다.   
+> 아래의 내용과 같이 작성한다면 애그리게이트 경계를 넘어서는(Circle 이 User 의 데이터를 건드리는) 일은 없을 것 이다.   
+> 추가적으로 메모리를 절약하는 방법의 일종이 될 것이다.
+```kotlin
+// Circle
+class Circle(
+  val name: String
+) {
+
+  val id: String = UUID.randomUUID().toString().replace("-", "")
+
+  // 식별자를 이용한 컴포지션이다.
+  val userIds: MutableList<String> = mutableListOf()
+}
+
+// User
+class User(
+    val name: String
+) {
+
+    val id: String = UUID.randomUUID().toString().replace("-", "")
+}
+```
+
   
