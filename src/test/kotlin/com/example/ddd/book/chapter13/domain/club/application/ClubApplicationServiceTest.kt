@@ -50,7 +50,7 @@ internal class ClubApplicationServiceTest(
             clubApplicationService.join(club.id!!, Member("강감찬"))
         }
 
-        // then
+        // thenㅡ
         exception.message shouldBe "클럽의 가입인원은 가득 찼습니다."
     }
 }
