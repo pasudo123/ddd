@@ -7,8 +7,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestConstructor
+import org.springframework.transaction.annotation.Transactional
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
@@ -23,6 +23,7 @@ annotation class TestEnvironment
 @TestEnvironment
 @SpringBootTest
 @Import(value = [EnableJpaAuditConfiguration::class])
+@Transactional
 annotation class IntegrationSupport
 
 @Target(AnnotationTarget.CLASS)
