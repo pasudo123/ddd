@@ -8,6 +8,12 @@ import com.example.ddd.book.chapter13.domain.member.repository.MemberRepository
 import com.example.ddd.book.chapter13.domain.member.service.MemberDomainService
 import org.springframework.transaction.annotation.Transactional
 
+/**
+ * 애플리케이션 계층은 사용자의 유스케이스를 구현한다.
+ * 유스케이스는 하나의 트랜잭션 단위로 묶인다.
+ *
+ * 애플리케이션 계층은 도메인 미 인프라스트럭처에 대한 의존성을 가진다.
+ */
 @Transactional
 @ApplicationService
 class ClubApplicationService(
