@@ -59,41 +59,53 @@
 
 ```mermaid
 flowchart TB
-  %% Layered Architecture + DDD (Simple)
+  %% ==========================================================
+  %% Layered Architecture + DDD (with Optional Port)
+  %% ==========================================================
 
   subgraph PRESENTATION["Presentation Layer (Web)"]
     direction TB
-    CONTROLLER["Controller<br/>(Request/Response, Validation)"]
+    CONTROLLER["Controller<br/>(Request/Response,<br/>Validation)"]
   end
 
   subgraph APPLICATION["Application Layer"]
     direction TB
-    APP_SERVICE["Application Service / Use Case<br/>(@Transactional, Orchestration)"]
     COMMAND["Command<br/>(Use Case Input)"]
+    APP_SERVICE["Application Service / Use Case<br/>(@Transactional,<br/>Orchestration)"]
   end
 
   subgraph DOMAIN["Domain Layer"]
     direction TB
-    AGG["Aggregate / Entity / VO<br/>(Domain Logic, Invariants)"]
-    DOMAIN_SVC["Domain Service (Optional)<br/>(Complex Domain Rule)"]
+    DOMAIN_SERVICE["Domain Service (Optional)<br/>(Complex Domain Rule)"]
+    AGGREGATE["Aggregate / Entity / VO<br/>(Domain Logic,<br/>Invariants)"]
+
+    DOMAIN_SERVICE --> AGGREGATE
   end
 
   subgraph INFRA["Infrastructure Layer"]
     direction TB
-    REPO["Repository Implementation<br/>(JPA/JDBC, External I/O)"]
+    REPO_IMPL["Repository Implementation<br/>(JPA/JDBC,<br/>External I/O)"]
     DB["Database"]
+    REPO_IMPL --> DB
   end
 
-  CONTROLLER --> COMMAND
-  COMMAND --> APP_SERVICE
+  %% --- Optional Port (Interface) ---
+  REPO_PORT["Repository Port (Optional)<br/>(Interface)"]
 
-  APP_SERVICE --> AGG
-  APP_SERVICE --> DOMAIN_SVC
-  DOMAIN_SVC --> AGG
+  %% ==========================================================
+  %% Flow
+  %% ==========================================================
+  CONTROLLER --> COMMAND --> APP_SERVICE
 
-  APP_SERVICE --> REPO
-  REPO --> DB
-  REPO --> AGG
+  APP_SERVICE --> AGGREGATE
+  APP_SERVICE --> DOMAIN_SERVICE
+
+  %% --- Repository interaction (Port optional) ---
+  APP_SERVICE --> REPO_PORT
+  REPO_PORT --> REPO_IMPL
+
+  %% --- Mapping / Reconstitution concept ---
+  REPO_IMPL --> AGGREGATE
 ```
     
 #### 스프링의 `@Service` 애노테이션을 보면 아래와 같은 내용이 있다.
