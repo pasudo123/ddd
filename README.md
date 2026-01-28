@@ -59,67 +59,41 @@
 
 ```mermaid
 flowchart TB
-  %% ==========================================================
-  %% Spring Boot Layered Architecture + DDD (Chapter06)
-  %% ==========================================================
+  %% Layered Architecture + DDD (Simple)
 
-  subgraph WEB["Spring Boot Web Layer (Presentation)"]
+  subgraph PRESENTATION["Presentation Layer (Web)"]
     direction TB
-    CONTROLLER["Controller<br/>(@RestController)"] --> REQ_DTO["Request DTO<br/>(JSON -> DTO)"]
-    RES_DTO["Response DTO<br/>(DTO -> JSON)"]
+    CONTROLLER["Controller<br/>(Request/Response, Validation)"]
   end
 
-  subgraph APP["Application Layer (Use Case Orchestration)"]
+  subgraph APPLICATION["Application Layer"]
     direction TB
-    COMMAND["Command<br/>(Use Case Input)"] --> USECASE["Application Service / Use Case<br/>(@Service)"]
-    USECASE -. "트랜잭션 경계(@Transactional)<br/>락/재시도/타임아웃<br/>유즈케이스 오케스트레이션" .- USECASE
+    APP_SERVICE["Application Service / Use Case<br/>(@Transactional, Orchestration)"]
+    COMMAND["Command<br/>(Use Case Input)"]
   end
 
-  subgraph DOMAIN["Domain Layer (Domain Logic)"]
+  subgraph DOMAIN["Domain Layer"]
     direction TB
-    AGGREGATE["Aggregate<br/>(도메인 로직 1차 소유자)"]
-    ENTITY["Entity<br/>(식별자/상태)"]
-    VALUE_OBJECT["Value Object<br/>(검증/규칙)"]
-    DOMAIN_SERVICE["Domain Service (옵션)<br/>(단일 모델로 표현 어려운 규칙)"]
-
-    DOMAIN_SERVICE --> AGGREGATE
-    AGGREGATE -. "불변식 유지 / 상태 전이" .- AGGREGATE
+    AGG["Aggregate / Entity / VO<br/>(Domain Logic, Invariants)"]
+    DOMAIN_SVC["Domain Service (Optional)<br/>(Complex Domain Rule)"]
   end
 
-  subgraph INFRA["Infrastructure Layer (Adapters / Implementations)"]
+  subgraph INFRA["Infrastructure Layer"]
     direction TB
-    REPO_IMPL["Repository Implementation<br/>(Spring Data JPA/JdbcTemplate)<br/>@Repository"]
-    DB["Database<br/>(MySQL etc.)"]
-
-    REPO_IMPL --> DB
+    REPO["Repository Implementation<br/>(JPA/JDBC, External I/O)"]
+    DB["Database"]
   end
 
-  %% ==========================================================
-  %% Ports (Interfaces) - Often placed in Domain or Application
-  %% ==========================================================
-  REPO_PORT["Repository Interface (Port)<br/>(Domain/Application에 위치)"]
+  CONTROLLER --> COMMAND
+  COMMAND --> APP_SERVICE
 
-  %% ==========================================================
-  %% Flow
-  %% ==========================================================
-  CONTROLLER --> REQ_DTO
-  REQ_DTO --> COMMAND
-  COMMAND --> USECASE
+  APP_SERVICE --> AGG
+  APP_SERVICE --> DOMAIN_SVC
+  DOMAIN_SVC --> AGG
 
-  USECASE --> REPO_PORT
-  REPO_PORT --> REPO_IMPL
-
-  USECASE --> AGGREGATE
-  USECASE --> ENTITY
-  USECASE --> VALUE_OBJECT
-  USECASE --> DOMAIN_SERVICE
-
-  AGGREGATE --> RES_DTO
-  RES_DTO --> CONTROLLER
-
-  %% Note: Aggregate loading
-  REPO_PORT --> AGGREGATE
-
+  APP_SERVICE --> REPO
+  REPO --> DB
+  REPO --> AGG
 ```
     
 #### 스프링의 `@Service` 애노테이션을 보면 아래와 같은 내용이 있다.
