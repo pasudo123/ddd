@@ -39,18 +39,88 @@
      * 저장/조회/탐색(질의) 중심이면 레파지토리
      * 규칙/정책/판단(도메인 의미) 중심이면 도메인 (엔티티/VO/도메인 서비스)
 
-### chapter06 : 💁 __애플리케이션 서비스__   
-<img alt="image" src="./images/DDD_application_service.png" />   
-  
-* `api` -> `application-service` -> `domain-service` -> `repository` -> `data-store`
-  * application-service 에서 여러 domain-service 의 내용들을 머지해서 내려주도록 해야한다.
-  * 애플리케이션 서비스에 대한 응집도를 낮출수도 혹은 높일수도 있다.
-    * 응집도를 낮춘다면,
-      * UserApplicationService (유저 등록/탈퇴/수정 을 모두 다 한다.)
-    * 응집도를 높인다면, (패키지로 응집도 높인 클래스를 구분한다. application.users.*)
-      * UserApplicationRegisterService
-      * UserApplicationDeleteService
-      * UserApplicationUpdateService
+### chapter06 : 💁 __애플리케이션 서비스__  (26.01.29 개정 with ChatGPT)
+* Application Service 가 Repository 를 통해서 Aggregate 를 가져온다.
+* Application Service 는 사용자 유즈케이스를 다룬다. 도메인 로직은 Domain Model(VO or Aggregate) 가 우선 처리하며 단일 모델로 표현하기 어려운 규칙은 Domain Service 로 처리한다.
+* 비즈니스 로직 != 도메인 로직은 다른 개념
+  * 좀 더 상세하게 말하면 비즈니스는 넓은 의미라서 차라리 유즈케이스 오케스트레이션과 도메인 로직이라고 표현하는게 오해를 줄인다.
+* 도메인 로직은 가능한 Aggregate 로 위치시킨다. Domain Service 가 없이도 Aggregate 로 DDD 를 처리할 수 있다.
+* Application Service 가 API 요청을 Command 로 받는다. 이후에 VO, Entity, Aggregate 인 도메인 모델을 호출한다. 필요시 Domain Service 를 만들어 이용한다.
+* Application Service 에서 서로 다른 도메인들이 필요한 경우 오케스트레이션 한다.
+  * 단, 서로 다른 Aggregate 를 한 유즈케이스에서 변경할 때는 트랜잭션 경계/일관성을 기준으로 결합도를 관리한다.
+  * Application Service 가 N개의 성격의 Domain Model 을 이용해서 처리해야하는 경우가 있을 수 있다.
+* 애플리케이션 서비스에 대해 책임을 분리할 수 있다.
+  * 한 클래스안에 유즈케이스를 다 포함시킨다.
+    * UserService 
+  * 유즈케이스를 명령 단위로 클래스를 분리한다.
+    * UserRegisterService
+    * UserDeleteService
+    * UserUpdateService
+
+```mermaid
+flowchart TB
+  %% ==========================================================
+  %% Spring Boot Layered Architecture + DDD (Chapter06)
+  %% ==========================================================
+
+  subgraph WEB["Spring Boot Web Layer (Presentation)"]
+    direction TB
+    CONTROLLER["Controller<br/>(@RestController)"] --> REQ_DTO["Request DTO<br/>(JSON -> DTO)"]
+    RES_DTO["Response DTO<br/>(DTO -> JSON)"]
+  end
+
+  subgraph APP["Application Layer (Use Case Orchestration)"]
+    direction TB
+    COMMAND["Command<br/>(Use Case Input)"] --> USECASE["Application Service / Use Case<br/>(@Service)"]
+    USECASE -. "트랜잭션 경계(@Transactional)<br/>락/재시도/타임아웃<br/>유즈케이스 오케스트레이션" .- USECASE
+  end
+
+  subgraph DOMAIN["Domain Layer (Domain Logic)"]
+    direction TB
+    AGGREGATE["Aggregate<br/>(도메인 로직 1차 소유자)"]
+    ENTITY["Entity<br/>(식별자/상태)"]
+    VALUE_OBJECT["Value Object<br/>(검증/규칙)"]
+    DOMAIN_SERVICE["Domain Service (옵션)<br/>(단일 모델로 표현 어려운 규칙)"]
+
+    DOMAIN_SERVICE --> AGGREGATE
+    AGGREGATE -. "불변식 유지 / 상태 전이" .- AGGREGATE
+  end
+
+  subgraph INFRA["Infrastructure Layer (Adapters / Implementations)"]
+    direction TB
+    REPO_IMPL["Repository Implementation<br/>(Spring Data JPA/JdbcTemplate)<br/>@Repository"]
+    DB["Database<br/>(MySQL etc.)"]
+
+    REPO_IMPL --> DB
+  end
+
+  %% ==========================================================
+  %% Ports (Interfaces) - Often placed in Domain or Application
+  %% ==========================================================
+  REPO_PORT["Repository Interface (Port)<br/>(Domain/Application에 위치)"]
+
+  %% ==========================================================
+  %% Flow
+  %% ==========================================================
+  CONTROLLER --> REQ_DTO
+  REQ_DTO --> COMMAND
+  COMMAND --> USECASE
+
+  USECASE --> REPO_PORT
+  REPO_PORT --> REPO_IMPL
+
+  USECASE --> AGGREGATE
+  USECASE --> ENTITY
+  USECASE --> VALUE_OBJECT
+  USECASE --> DOMAIN_SERVICE
+
+  AGGREGATE --> RES_DTO
+  RES_DTO --> CONTROLLER
+
+  %% Note: Aggregate loading
+  REPO_PORT --> AGGREGATE
+
+```
     
 #### 스프링의 `@Service` 애노테이션을 보면 아래와 같은 내용이 있다.
 > Indicates that an annotated class is a "Service",    
